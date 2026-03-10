@@ -1,0 +1,42 @@
+Irrigation should be applied when soil moisture drops below 25%.
+Clay soils retain water longer than sandy soils.
+Weather forecasts should be checked before irrigation.
+Drip irrigation is more efficient than sprinkler irrigation.
+Distance between Control station and last valve 400-450m maximum you better use "Multicable system".
+For a small system when the distance is not that long we can use multi cable. 
+74702-000069--GS Max With Double Door Controller	GS-MAX-DD-220V-6DO-12DI  MAX Double Door, 220V, 6 Digital Outputs, and 12 Digital Inputs
+74743-000014--RS232 SERIAL PORT	The RS 232 Serial port connects the SingleNet, NetRTU, and Davis weather station to the MAX
+74743-000017--RS485 SERIAL PORT	The RS 485 Serial port connects the RadioNet and the SingleNet base units to the MAX
+If the project has more than 16 valves/outputs then you should add more 74743-000098--GS-MAX 16 RELAY DO
+74743-000098--GS-MAX 16 RELAY DO	GS-MAX 16 RELAY WITH ADAPTOR (16 Outputs - RelayShared Common, Kickback protection, 24 VAC @ 80 VA)
+If project includes fertikit then you should add 74743-000099--GS-MAX 8 TRIAC
+If project includes EC/PH then you should add 74743-000100--GS-MAX 4 AI WITH ADAPT
+Adding a weather station to the projects 74730-000050--Davis Weather Station
+If Multicable System is with more than 16 Valves then add 74743-000098 Accordingly
+Medium and Large Systems more than 500 meters long is recommended to use SingleNet or RadioNet
+If you choose SingleNet then you definetely need a Host: 00035-00176--Singlenet Host
+If there are not more than 2 valves in one group then you should use 74340-01490--RTU 2x2
+00035-00176--Singlenet Host
+74340-01490--SingleNet RTU 2x2
+74340-015000--SingleNet RTU 4x4
+If there are more than 2 valves and up to 4 in one group then you should use 74340-015000--RTU 4x4
+If there are more than 4 valves in one group then you should combine RTUs to get the needed number.
+Always in SingleNet system you should install SLSM for lighting protection and minimum 2pcs RTUs with PLSM
+SLSM is needed in the pump station exactly after the Host.
+If Netacap sensors are needed for the SingleNet system, then you should use GS-ONE units to the system.
+Each GS ONE unit can control 1 Netacap and 2 Digital Inputs.
+In SingleNet system you cannot install Netacap directly to it, You should add GS ONE if needed.
+74715-000010--GS-ONE
+74730-000009--NETACAP 6/60CM
+SOIL MOISTURE NETACAP WP 6/60CM
+If Netacap sensors are needed for RadioNet system, then we can use 8 NetaCap sensors for the whole system through Radionet.
+74360-007600--RadioNet HOST + BASE
+74330-012200--RadioNet RTU 2DI-1DO Expandable
+74330-012195--RadioNet RTU 2DI-2DOU
+74330-005760--RADIONET SOLAR PANEL KIT 9V-3W
+74330-013140--RadioNet Expansion Board 2DI-2DO
+Don't forget that RadioNet RTUs all need to be earthed well.
+For a group of 2 Valves you can use RadioNet:  74330-012195--RadioNet RTU 2DI-2DOU
+For a group of more than 2 valves you should use RadioNet:  74330-012200--RadioNet RTU 2DI-1DO Expandable
+RadioNet RTU 2DI-1DO Expandable can operate up to 9 valves 
+You need to add 74330-013140--RadioNet Expansion Board 2DI-2DO in order to operate more valves with RadioNet RTU 2DI-1DO Expandable

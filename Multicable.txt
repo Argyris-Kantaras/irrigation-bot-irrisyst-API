@@ -1,0 +1,8 @@
+74702-000069	 Max With Double Door Controller	GS-MAX-DD-220V-6DO-12DI  MAX Double Door, 220V, 6 Digital Outputs, and 12 Digital Inputs
+74743-000014	RS232 SERIAL PORT	The RS 232 Serial port connects the SingleNet, NetRTU, and Davis weather station to the MAX
+74743-000017	RS485 SERIAL PORT	The RS 485 Serial port connects the RadioNet and the SingleNet base units to the MAX
+If the project has more than 16 valves/outputs then you should add more 74743-000098--GS-MAX 16 RELAY DO
+74743-000098	GS-MAX 16 RELAY DO	GS-MAX 16 RELAY WITH ADAPTOR (16 Outputs - RelayShared Common, Kickback protection, 24 VAC @ 80 VA)
+If project includes fertikit then you should add 74743-000099--GS-MAX 8 TRIAC
+If project includes EC/PH then you should add 74743-000100--GS-MAX 4 AI WITH ADAPT
+Adding a weather station to the project 74730-000050--Davis Weather Station

@@ -6,6 +6,7 @@ from sklearn.model_selection import train_test_split
 import pandas as pd
 from fastapi import FastAPI, Form
 from fastapi.responses import FileResponse,JSONResponse
+import os
 
 qty = 1
 groups_of_valves = []
@@ -197,9 +198,12 @@ def chat(message: str = Form(...)):
 # -------------------------------------------------------
 
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+KNOWLEDGE_PATH = os.path.join(BASE_DIR, "knowledge.txt")
+
 
 # ---------------- Knowledge base ----------------
-with open(r"\knowledge.txt", "r") as f:
+with open(KNOWLEDGE_PATH, "r", encoding="utf-8") as f:
     documents = [line.strip() for line in f if line.strip()]
 
 vectorizer_docs = TfidfVectorizer()

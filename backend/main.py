@@ -199,7 +199,7 @@ def chat(message: str = Form(...)):
 
 
 # ---------------- Knowledge base ----------------
-with open(r"D:\python projects\AI\chatbot_from_scratch\knowledge.txt", "r") as f:
+with open(r"\knowledge.txt", "r") as f:
     documents = [line.strip() for line in f if line.strip()]
 
 vectorizer_docs = TfidfVectorizer()

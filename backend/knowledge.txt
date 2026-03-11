@@ -32,7 +32,7 @@ SOIL MOISTURE NETACAP WP 6/60CM
 If Netacap sensors are needed for RadioNet system, then we can use 8 NetaCap sensors for the whole system through Radionet.
 74360-007600--RadioNet HOST + BASE
 74330-012200--RadioNet RTU 2DI-1DO Expandable
-74330-012195--RadioNet RTU 2DI-2DOU
+74330-012195--RadioNet RTU 2DI-2DO
 74330-005760--RADIONET SOLAR PANEL KIT 9V-3W
 74330-013140--RadioNet Expansion Board 2DI-2DO
 Don't forget that RadioNet RTUs all need to be earthed well.

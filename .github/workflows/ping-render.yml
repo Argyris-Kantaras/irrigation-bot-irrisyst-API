@@ -1,0 +1,14 @@
+name: Keep Render Alive
+
+on:
+  schedule:
+    - cron: "*/13 * * * *"   # every 13 minutes
+  workflow_dispatch:         # allow manual run
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render service
+        run: |
+          curl -I  https://irrigation-bot-irrisyst-api.onrender.com/design_system/ || true

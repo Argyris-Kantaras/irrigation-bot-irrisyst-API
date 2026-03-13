@@ -1,3 +1,4 @@
+Drip irrigation is a highly efficient, low-pressure watering method that delivers water directly to plant root zones through a network of valves, pipes, tubing, and emitters
 Irrigation should be applied when soil moisture drops below 25%.
 Clay soils retain water longer than sandy soils.
 Weather forecasts should be checked before irrigation.
@@ -7,15 +8,19 @@ For a small system when the distance is not that long we can use multi cable.
 74702-000069--GS Max With Double Door Controller	GS-MAX-DD-220V-6DO-12DI  MAX Double Door, 220V, 6 Digital Outputs, and 12 Digital Inputs
 74743-000014--RS232 SERIAL PORT	The RS 232 Serial port connects the SingleNet, NetRTU, and Davis weather station to the MAX
 74743-000017--RS485 SERIAL PORT	The RS 485 Serial port connects the RadioNet and the SingleNet base units to the MAX
-If the project has more than 16 valves/outputs then you should add more 74743-000098--GS-MAX 16 RELAY DO
+If the project has more than 16 valves/outputs then you should add more GS-MAX 16 RELAY DO
 74743-000098--GS-MAX 16 RELAY DO	GS-MAX 16 RELAY WITH ADAPTOR (16 Outputs - RelayShared Common, Kickback protection, 24 VAC @ 80 VA)
 If project includes fertikit then you should add 74743-000099--GS-MAX 8 TRIAC
-If project includes EC/PH then you should add 74743-000100--GS-MAX 4 AI WITH ADAPT
-Adding a weather station to the projects 74730-000050--Davis Weather Station
-If Multicable System is with more than 16 Valves then add 74743-000098 Accordingly
+If project includes EC/PH then you should add 74743-000100--GS-MAX 4 AI WITH ADAPTOR
+Weather station can help to irrigate properly and follow the actual weather data
+If Multicable System is with more than 16 Valves then add (GS-MAX 16 RELAY DO) Accordingly
 Medium and Large Systems more than 500 meters long is recommended to use SingleNet or RadioNet
-If you choose SingleNet then you definetely need a Host: 00035-00176--Singlenet Host
+If you choose SingleNet then you definetely need a Host
 If there are not more than 2 valves in one group then you should use 74340-01490--RTU 2x2
+When field is smaller than 20ha then it is suggested to use Multicable system
+When field is larger than 20ha then it is suggested to use Singlenet or Radionet system
+If the field is between a lot of trees, that could effect the RadioNet signals
+74730-000050--Davis Weather Station
 00035-00176--Singlenet Host
 74340-01490--SingleNet RTU 2x2
 74340-015000--SingleNet RTU 4x4

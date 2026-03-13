@@ -11,4 +11,4 @@ jobs:
     steps:
       - name: Ping Render service
         run: |
-          curl -I https://YOUR-RENDER-APP.onrender.com || true
+          curl -I  https://irrigation-bot-irrisyst-api.onrender.com/design_system/ || true

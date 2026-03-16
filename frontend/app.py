@@ -10,8 +10,9 @@ page = st.sidebar.radio("Go to", ["💬 Chat Assistant", "🛠 System Designer"]
 # API_CHAT_URL = "http://localhost:8000/chat/"
 # API_DESIGN_URL = "http://localhost:8000/design_system/"
 # https://irrigation-bot-irrisyst-api.onrender.com
-API_CHAT_URL = "https://irrigation-bot-irrisyst-api.onrender.com/chat/"
-API_DESIGN_URL = "https://irrigation-bot-irrisyst-api.onrender.com/design_system/"
+API_CHAT_URL = "https://irrigation-backend.fly.dev/chat/"
+API_DESIGN_URL = "https://irrigation-backend.fly.dev/design_system/"
+
 
 
 # ---------------- Chat Page ----------------

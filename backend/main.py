@@ -254,10 +254,13 @@ SYSTEM_PARTS = {
 
 # ---------------- Training data ----------------
 training_data = [
+    ("when to irrigate", "knowledge_query"),
     ("when should I irrigate", "knowledge_query"),
     ("how does soil type affect irrigation", "knowledge_query"),
     ("tell me about drip irrigation", "knowledge_query"),
-    ("What system should I use for a system that is 400m long", "knowledge_query"),
+    ("What system should I use for a system that is 20 ha long", "knowledge_query"),
+    ("What system should I use for a system that is 40 ha long", "knowledge_query"),
+    ("What system should I use for a system that is 60 ha long", "knowledge_query"),
     ("Small system", "knowledge_query"),
     ("when is the best time to irrigate", "knowledge_query"),
     ("how often should I water my crops", "knowledge_query"),
@@ -265,6 +268,7 @@ training_data = [
     ("what affects irrigation timing", "knowledge_query"),
     ("how much water do plants need", "knowledge_query"),
     ("Best irrigation", "knowledge_query"),
+    ("irrigation", "knowledge_query"),
     ("RadioNet", "radionet"),
     ("RTU", "knowledge_query"),
     ("Small field", "knowledge_query"),

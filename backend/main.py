@@ -130,6 +130,8 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                     p["Qty"] = solar_panel_qty
               if p.get("part")== "Ground Kit":
                     p["Qty"] = solar_panel_qty
+              if p.get("part")== "Rnet battery":
+                    p["Qty"] = solar_panel_qty
 
     # Optional add-ons
     if controller:
@@ -264,6 +266,7 @@ SYSTEM_PARTS = {
         {"part": "Expans. Board", "SN": "74330-013140","name": "RadioNet Expansion Board 2DI-2DO","Qty": qty-1},
         {"part": "R-NET MONOPOL.ANT. 6M", "SN": "74330-005060","name": "R-NET MONOPOL.ANT.430-470 6M GROUNDED485","Qty": qty-1},
         {"part": "Ground Kit", "SN": "77100-005880","name": "Ground Kit","Qty": qty-1},
+        {"part": "Rnet battery", "SN": "74330-003025","name": "R-NET BATTERY 6V 1.3AH SLA NP1.2-6","Qty": qty-1},
     ],
     "multicable": [
         {"part": "16-DO RELAY", "SN": "74743-000098","name": "GS-MAX 16 RELAY WITH ADAPTOR","Qty": qty},

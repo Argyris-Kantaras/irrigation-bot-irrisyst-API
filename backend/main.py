@@ -1,6 +1,7 @@
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.svm import LinearSVC
+# from sklearn.linear_model import LogisticRegression
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.model_selection import train_test_split
 import pandas as pd
@@ -31,7 +32,7 @@ def choose_system(field_area: float) -> str:
 
 # ------------------ PARTS GENERATION ------------------
 
-def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: bool, weather_station: bool):
+def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: bool, weather_station: bool, controller: bool):
     parts = [p.copy() for p in SYSTEM_PARTS[system_name]]
     rtu2x2 = 0
     rtu4x4 = 0
@@ -64,12 +65,22 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                 if valves > 80 and p.get("part")=="16-DO RELAY":
                     return {"error": "Sorry you reached the maximum number of valves fo rthe system."}
 
-    if system_name == "singlenet":     
+    if system_name == "singlenet":  
+        rtu2_plsm = 0  
+        rtu4_plsm = 0  
         for v in total_valves:  
           for p in parts:
+              if v <= 2 and rtu2_plsm == 0 and p.get("part")=="RTU 2x2+PLSM":
+                rtu2_plsm = rtu2_plsm + 1
+                rtu2x2 = rtu2x2-1
+                p["Qty"] = rtu2_plsm
               if v <= 2 and p.get("part")=="RTU 2x2":
                 rtu2x2 = rtu2x2+1
                 p["Qty"] = rtu2x2
+              if v > 2 and v <= 4 and rtu4_plsm == 0 and p.get("part")=="RTU 4x4+PLSM":
+                rtu4_plsm = rtu4_plsm+1
+                rtu4x4 = rtu4x4-1
+                p["Qty"] = rtu4_plsm
               if v > 2 and v <= 4 and p.get("part")=="RTU 4x4":
                 rtu4x4 = rtu4x4+1
                 p["Qty"] = rtu4x4
@@ -82,7 +93,6 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
               if v > 6 and p.get("part")=="RTU 4x4":
                 rtu4x4 = rtu4x4+2
                 p["Qty"] = rtu4x4
-        print(fertikit)
 
 
         
@@ -116,7 +126,16 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                 p["Qty"] = expansion_board
               if p.get("part")== "RADIONET SOLAR PANEL":
                     p["Qty"] = solar_panel_qty
+              if p.get("part")== "R-NET MONOPOL.ANT. 6M":
+                    p["Qty"] = solar_panel_qty
+              if p.get("part")== "Ground Kit":
+                    p["Qty"] = solar_panel_qty
+
     # Optional add-ons
+    if controller:
+                parts.append({"part": "Controller", "SN": "74702-000069","name": "GS Max With Double Door Controller","Qty": 1},)
+                parts.append({"part": "RS232", "SN": "74743-000014","name": "RS232 SERIAL PORT","Qty": 1},)
+                parts.append({"part": "RS485", "SN": "74743-000017","name": "RS485 SERIAL PORT","Qty": 1},)
     if fertikit:
                 parts.append( {"part": "Triac", "SN": "74743-000099","name": "GS-MAX 8 TRIAC","Qty": 1},)
     if ec_ph:
@@ -161,11 +180,12 @@ def design_system(
     total_valves: str = Form(...),
     fertikit: bool = Form(...),
     ec_ph: bool = Form(...),
-    weather_station: bool = Form(...)
+    weather_station: bool = Form(...),
+    controller: bool = Form(...)
 ):
     valves_groups = create_valves_groups(total_valves)
     system = system_type.lower()
-    parts = generate_parts(system, valves_groups, fertikit, ec_ph, weather_station)
+    parts = generate_parts(system, valves_groups, fertikit, ec_ph, weather_station,controller)
     filename = export_system_excel(project_name,system, parts,fertikit, ec_ph, weather_station)
     return FileResponse(filename, filename=filename)
 
@@ -186,9 +206,6 @@ def chat(message: str = Form(...)):
     if intent == "knowledge_query":
         passage = retrieve_relevant_passage(message)
         return JSONResponse({"reply": passage[0][0]})
-
-    if intent in ["singlenet", "radionet", "multicable"]:
-        return JSONResponse({"reply": f"{intent.capitalize()} is a great choice. How many valves do you have?"})
 
     if intent == "export_excel":
         return JSONResponse({"reply": "Please provide field_area and total_valves to generate the Excel file."})
@@ -226,28 +243,29 @@ SYSTEM_PARTS = {
     "weather-station": [
         {"part": "Weather station", "SN": "74730-000050","name": "Davis Weather Station","Qty": qty},
     ],
-    "singlenet": [
+    "GS-MAX-Controller": [
         {"part": "Controller", "SN": "74702-000069","name": "GS Max With Double Door Controller","Qty": qty},
         {"part": "RS232", "SN": "74743-000014","name": "RS232 SERIAL PORT","Qty": qty},
         {"part": "RS485", "SN": "74743-000017","name": "RS485 SERIAL PORT","Qty": qty},
-        {"part": "Host", "SN": "00035-00176","name": "Singlenet Host","Qty": qty},
-        {"part": "RTU 2x2", "SN": "74340-01490","name": "SingleNet RTU 2x2","Qty": qty - 1},
+    ],
+    "singlenet": [
+        {"part": "Host", "SN": "00035-001760","name": "Singlenet Host","Qty": qty},
+        {"part": "RTU 2x2", "SN": "74340-014900","name": "SingleNet RTU 2x2","Qty": qty - 1},
         {"part": "RTU 4x4", "SN": "74340-015000","name": "SingleNet RTU 4x4","Qty": qty - 1},
+        {"part": "SLSM", "SN": "00035-008300","name": "SINGLENET SLSM LINE SUPPRESSION MODULE","Qty": qty },
+        {"part": "RTU 4x4+PLSM", "SN": "74340-015500","name": "SINGLENET RTU 4 LATCH OUT &4 D.IN+PLSM","Qty": qty - 1},
+        {"part": "RTU 2x2+PLSM", "SN": "74340-015400","name": "SINGLENET RTU 2 LATCH OUT&2 D.IN+PLSM","Qty": qty - 1},
     ],
     "radionet": [
-        {"part": "Controller", "SN": "74702-000069","name": "GS Max With Double Door Controller","Qty": qty},
-        {"part": "RS232", "SN": "74743-000014","name": "RS232 SERIAL PORT","Qty": qty},
-        {"part": "RS485", "SN": "74743-000017","name": "RS485 SERIAL PORT","Qty": qty},
         {"part": "Host and Base", "SN": "74360-007600","name": "RadioNet HOST + BASE","Qty": qty},
         {"part": "RTU 2x2", "SN": "74330-012195","name": "RadioNet RTU 2DI-2DO","Qty": qty-1},
         {"part": "RTU Expandable", "SN": "74330-012200","name": "RadioNet RTU 2DI-1DO Expandable","Qty": qty-1},
         {"part": "RADIONET SOLAR PANEL", "SN": "74330-005760","name": "RADIONET SOLAR PANEL KIT 9V-3W","Qty": qty-1},
         {"part": "Expans. Board", "SN": "74330-013140","name": "RadioNet Expansion Board 2DI-2DO","Qty": qty-1},
+        {"part": "R-NET MONOPOL.ANT. 6M", "SN": "74330-005060","name": "R-NET MONOPOL.ANT.430-470 6M GROUNDED485","Qty": qty-1},
+        {"part": "Ground Kit", "SN": "77100-005880","name": "Ground Kit","Qty": qty-1},
     ],
     "multicable": [
-        {"part": "Controller", "SN": "74702-000069","name": "GS Max With Double Door Controller","Qty": qty},
-        {"part": "RS232", "SN": "74743-000014","name": "RS232 SERIAL PORT","Qty": qty},
-        {"part": "RS485", "SN": "74743-000017","name": "RS485 SERIAL PORT","Qty": qty},
         {"part": "16-DO RELAY", "SN": "74743-000098","name": "GS-MAX 16 RELAY WITH ADAPTOR","Qty": qty},
     ],
 }
@@ -269,37 +287,24 @@ training_data = [
     ("how much water do plants need", "knowledge_query"),
     ("Best irrigation", "knowledge_query"),
     ("irrigation", "knowledge_query"),
-    ("RadioNet", "radionet"),
+    ("RadioNet", "knowledge_query"),
     ("RTU", "knowledge_query"),
-    ("Small field", "knowledge_query"),
-    ("Medium field", "knowledge_query"),
-    ("Large field", "knowledge_query"),
-    ("Valves", "knowledge_query"),
-    ("singleNet", "singlenet"),
-    ("multiCable", "multicable"),
-    ("radionet", "radionet"),
+    ("singleNet", "knowledge_query"),
+    ("multiCable", "knowledge_query"),
+    ("radionet", "knowledge_query"),
+    ("radionet used for", "knowledge_query"),
     ("Netacap", "knowledge_query"),
     ("GS ONE", "knowledge_query"),
     ("GS MAX", "knowledge_query"),
-    ("Project is", "project_data"),
-    ("I have a small field", "project_data"),
-    ("I have a medium field", "project_data"),
-    ("I have a large field", "project_data"),
-    ("I have a field that is", "project_data"),
-    ("group", "create_valves_groups"),
-    ("valves group", "create_valves_groups"),
-    ("valve groups", "create_valves_groups"),
-    ("valve", "create_valves_groups"),
-    ("groups of valves", "create_valves_groups"),
-    ("groups of", "create_valves_groups"),
+    ("Project is", "knowldge_query"),
+    ("I have a field 20 ha long", "knowldge_query"),
+    ("I have a field 40 ha long", "knowldge_query"),
+    ("I have a field 60 ha long", "knowldge_query"),
     ("create excel file", "export_excel"),
     ("make xls", "export_excel"),
     ("save this to spreadsheet", "export_excel"),
     ("export results", "export_excel"),
     ("generate xls", "export_excel"),
-    ("yes", "confirm"),
-    ("Yes", "confirm"),
-    ("no", "deny"),
     ("hi", "greeting"),
     ("hello there", "greeting"),
     ("good morning", "greeting"),
@@ -310,17 +315,20 @@ training_data = [
     ("what's the weather", "weather"),
     ("is it raining today", "weather"),
 ]
+'Radionet is a great choice. How many valves do you have?'
 
 texts = [t[0] for t in training_data]
 labels = [t[1] for t in training_data]
 
 # ----------- Validation Split -------------
 X_train_texts, X_test_texts, y_train, y_test = train_test_split(texts, labels, test_size=0.2, random_state=42)
-vectorizer = TfidfVectorizer(ngram_range=(1,2), max_df=0.9, stop_words="english")
+vectorizer = TfidfVectorizer(ngram_range=(1,3), max_df=2, stop_words="english")
+# vectorizer = TfidfVectorizer(ngram_range=(1,3), max_df=2, stop_words="english",sublinear_tf=True, max_features=50000)
 X_train = vectorizer.fit_transform(X_train_texts)
 X_test = vectorizer.transform(X_test_texts)
 
 clf = LinearSVC()
+# clf = LogisticRegression(max_iter=5000, C=3.0, class_weight="balanced")
 clf.fit(X_train, y_train)
 
 print("Accuracy: ", clf.score(X_test, y_test))
@@ -364,16 +372,6 @@ def valves_qty():
 # ---------------- Respond ----------------
 def respond(intent, user_input):
     global fertikit, ec_ph, weather_station, groups_of_valves
-
-    if intent == "confirm":
-        fertikit = input("Do you want to include a Fertikit in the system? (yes/no) ").strip().lower() == "yes"
-        ec_ph = input("Do you want to include an EC/PH sensor in the system? (yes/no) ").strip().lower() == "yes"
-        weather_station = input("Do you want to include a weather station in the system? (yes/no) ").strip().lower() == "yes"
-        return "Great! I've added those to the system. If you want to export the system details to an Excel file, just type 'create excel file'!"
-
-    if intent == "deny":
-        groups_of_valves = []
-        return "Okay, let's move on."
 
     if intent == "export_excel":
         system_name = input("Please enter the system name for the Excel file (e.g. singlenet, radionet, Multicable): ")

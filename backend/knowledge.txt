@@ -1,5 +1,14 @@
 Drip irrigation is a highly efficient, low-pressure watering method that delivers water directly to plant root zones through a network of valves, pipes, tubing, and emitters
 Irrigation should be applied when soil moisture drops below 25%.
+Multicable offers a high performance and easy to use system.
+Multicable can be a bit challenging to repair because of the new cables in case of problems.
+Multicable is very well functional and very easy to setup.
+RadioNet is a great choice for medium and large systems, offers stability and very easy repair process. Radionet uses very small amount of cables that prevents issues from cables eaten by animals.RadioNet works on 12 VDC
+SingleNet is a great choice for medium and large systems, with a simple setup installation process.Singlenet uses a two wire cable and through the host we can address the RTUs in the field.SingleNet works on 12 VDC.
+Radionet uses radio signal in order to communicate the Host and the RTUs.
+Multicable sends a 24 VAC to the valve in order to operate. 
+Every Radionet RTU should eathed properly
+Singlenet prevents the system from getting burned from lighting by adding PLSM and SLSM protections.
 Clay soils retain water longer than sandy soils.
 Weather forecasts should be checked before irrigation.
 Drip irrigation is more efficient than sprinkler irrigation.
@@ -42,7 +51,4 @@ If Netacap sensors are needed for RadioNet system, then we can use 8 NetaCap sen
 74330-005760--RADIONET SOLAR PANEL KIT 9V-3W
 74330-013140--RadioNet Expansion Board 2DI-2DO
 Don't forget that RadioNet RTUs all need to be earthed well.
-For a group of 2 Valves you can use RadioNet:  74330-012195--RadioNet RTU 2DI-2DOU
-For a group of more than 2 valves you should use RadioNet:  74330-012200--RadioNet RTU 2DI-1DO Expandable
 RadioNet RTU 2DI-1DO Expandable can operate up to 9 valves 
-You need to add 74330-013140--RadioNet Expansion Board 2DI-2DO in order to operate more valves with RadioNet RTU 2DI-1DO Expandable

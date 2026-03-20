@@ -7,11 +7,16 @@ st.set_page_config(page_title="Irrigation Assistant", layout="wide")
 st.sidebar.title("Navigation")
 page = st.sidebar.radio("Go to", ["💬 Chat Assistant", "🛠 System Designer"])
 
+# ---------------Local URLs (DEV)----------------
+
 # API_CHAT_URL = "http://localhost:8000/chat/"
 # API_DESIGN_URL = "http://localhost:8000/design_system/"
-# https://irrigation-bot-irrisyst-api.onrender.com
-API_CHAT_URL = "https://irrigation-backend.fly.dev/chat/"
-API_DESIGN_URL = "https://irrigation-backend.fly.dev/design_system/"
+
+# ---------------Official URLs----------------
+API_CHAT_URL = "https://backend-polished-pine-6029.fly.dev//chat/"
+API_DESIGN_URL = "https://backend-polished-pine-6029.fly.dev//design_system/"
+
+
 
 
 
@@ -63,22 +68,26 @@ elif page == "🛠 System Designer":
 
     with col1:
         project_name = st.text_input("Project Name: ")
-        system_type = st.text_input("System Type: ")
+        system_type = st.selectbox("System Type: ", ["Singlenet", "Radionet", "Multicable"])
         total_valves = st.text_input("Groups of valves(eg. 2 groups of 2 valves and 2 groups of 4 valves): ")
 
     with col2:
+        controller = st.checkbox("Include GS-MAX Controller?")
         fertikit = st.checkbox("Include Fertikit?")
         ec_ph = st.checkbox("Include EC/PH sensor?")
         weather_station = st.checkbox("Include Weather Station?")
 
+    if system_type == "Multicable":
+        controller = True
     if st.button("Generate System Design"):
         payload = {
             "project_name": project_name,
-            "system_type": system_type,
+            "system_type": system_type.lower(),
             "total_valves": total_valves,
             "fertikit": fertikit,
             "ec_ph": ec_ph,
-            "weather_station": weather_station
+            "weather_station": weather_station,
+            "controller": controller
         }
         response = requests.post(API_DESIGN_URL, data=payload)
 

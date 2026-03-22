@@ -32,7 +32,7 @@ def choose_system(field_area: float) -> str:
 
 # ------------------ PARTS GENERATION ------------------
 
-def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: bool, weather_station: bool, controller: bool):
+def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: bool, weather_station: bool, controller: bool,gs_one:bool, netacap_sensors:int, netacap_sensors_one:int , gs_one_units:int):
     parts = [p.copy() for p in SYSTEM_PARTS[system_name]]
     rtu2x2 = 0
     rtu4x4 = 0
@@ -40,6 +40,10 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
     rtu_expandable = 0
     expansion_board = 0
     solar_panel_qty = 0
+    def gs_one_devices_generator():
+           parts.append({"part": "GS-ONE", "SN": "74715-000010","name": "GS-ONE W.EXT.SOLAR-PANEL-4.4W+5M-RF-CABLE Monitoring unit","Qty": gs_one_units})
+           parts.append({"part": "NETACAP 6/60CM", "SN": "74730-000009","name": "SOIL MOISTURE NETACAP WP 6/60CM","Qty": netacap_sensors_one})
+    
 
     if system_name == "multicable":
         valves = 0
@@ -102,15 +106,26 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
 
         
     if system_name == "radionet":
+        if netacap_sensors > 0:
+                   parts.append({"part": "Serial Expansion card", "SN": "00035-013150","name": "Serial Expansion card, RS232/485/SDI12 ","Qty": netacap_sensors})
+                   parts.append({"part": "NETACAP 3.5V REGULATOR CARD", "SN": "74330-000006","name": "NETACAP 3.5V REGULATOR CARD #297 FOR DFM  ","Qty": netacap_sensors})            ,
+                   parts.append({"part": "R-NET DCP CAPACITOR CARD", "SN": "74330-012240","name": "R-NET DCP CAPACITOR CARD","Qty": netacap_sensors})
+                   parts.append({"part": "NETACAP 6/60CM", "SN": "74730-000009","name": "SOIL MOISTURE NETACAP WP 6/60CM","Qty": netacap_sensors})
         
         for r in range(len(total_valves)):
           solar_panel_qty = solar_panel_qty+1
             
         for v in total_valves:  
           for p in parts:
-              if v <= 2 and p.get("part")=="RTU 2x2":
+              if v <= 2 and netacap_sensors == 0 and p.get("part")=="RTU 2x2":
                 rtu2x2_radio = rtu2x2_radio+1
                 p["Qty"] = rtu2x2_radio
+
+              if v <= 2 and netacap_sensors > 0 and p.get("part")=="RTU Expandable":
+                rtu_expandable = rtu_expandable+1
+                expansion_board = expansion_board+1
+                p["Qty"] = rtu_expandable
+
               if v > 2 and v <= 3 and p.get("part")=="RTU Expandable":
                 rtu_expandable = rtu_expandable+1
                 expansion_board = expansion_board+1
@@ -149,6 +164,9 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                 parts.append({"part": "4 AI", "SN": "74743-000100","name": "GS-MAX 4 AI WITH ADAPTOR","Qty": 1},)
     if weather_station:
                 parts.append({"part": "Weather station", "SN": "74730-000050","name": "Davis Weather Station","Qty": 1},)
+
+    if gs_one:
+        gs_one_devices_generator()
         
     return parts
 # ------------------ EXCEL EXPORT ------------------
@@ -188,11 +206,15 @@ def design_system(
     fertikit: bool = Form(...),
     ec_ph: bool = Form(...),
     weather_station: bool = Form(...),
-    controller: bool = Form(...)
+    controller: bool = Form(...),
+    gs_one: bool = Form(...),
+    netacap_sensors: int = Form(...),
+    netacap_sensors_one: int = Form(...),
+    gs_one_units: int = Form(...)
 ):
     valves_groups = create_valves_groups(total_valves)
     system = system_type.lower()
-    parts = generate_parts(system, valves_groups, fertikit, ec_ph, weather_station,controller)
+    parts = generate_parts(system, valves_groups, fertikit, ec_ph, weather_station,controller,gs_one,netacap_sensors,netacap_sensors_one,gs_one_units)
     filename = export_system_excel(project_name,system, parts,fertikit, ec_ph, weather_station)
     return FileResponse(filename, filename=filename)
 
@@ -277,6 +299,18 @@ SYSTEM_PARTS = {
     "multicable": [
         {"part": "16-DO RELAY", "SN": "74743-000098","name": "GS-MAX 16 RELAY WITH ADAPTOR","Qty": qty},
     ],
+
+    "GS-ONE": [
+        {"part": "GS-ONE", "SN": "74715-000010","name": "GS-ONE W.EXT.SOLAR-PANEL-4.4W+5M-RF-CABLE Monitoring unit","Qty": qty},
+    ],
+    "Netacap": [
+        {"part": "NETACAP 6/60CM", "SN": "74730-000009","name": "SOIL MOISTURE NETACAP WP 6/60CM","Qty": qty},
+    ],
+    "DCP_parts":[
+        {"part": "Serial Expansion card", "SN": "00035-013150","name": "Serial Expansion card, RS232/485/SDI12 ","Qty": qty},
+        {"part": "NETACAP 3.5V REGULATOR CARD", "SN": "74330-000006","name": "NETACAP 3.5V REGULATOR CARD #297 FOR DFM  ","Qty": qty},
+        {"part": "R-NET DCP CAPACITOR CARD", "SN": "74330-012240","name": "R-NET DCP CAPACITOR CARD","Qty": qty},
+    ]
 }
 
 # ---------------- Training data ----------------
@@ -437,3 +471,15 @@ def chat():
 
 if __name__ == "__main__":
     chat()
+
+
+#upload -------------------
+# git add -A
+#git commit -m 'commit name'
+#git push origin main
+#flyctl deploy
+
+
+#####local run #######
+
+# uvicorn main:app  --reload --port 8000

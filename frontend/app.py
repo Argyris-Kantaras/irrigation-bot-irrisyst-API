@@ -1,6 +1,10 @@
 import streamlit as st
 import requests
 
+netacap_sensors = 0
+netacap_sensors_one = 0
+gs_one_units = 0
+
 st.set_page_config(page_title="Irrigation Assistant", layout="wide")
 
 # ---------------- Sidebar Navigation ----------------
@@ -71,11 +75,18 @@ elif page == "🛠 System Designer":
         system_type = st.selectbox("System Type: ", ["Singlenet", "Radionet", "Multicable"])
         total_valves = st.text_input("Groups of valves(eg. 2 groups of 2 valves and 2 groups of 4 valves): ")
 
+        if system_type == "Radionet":
+            netacap_sensors = st.number_input("Netacap sensors ('Max of 8 sensors on Radionet system')", max_value=8, min_value=0)
+
     with col2:
         controller = st.checkbox("Include GS-MAX Controller?")
         fertikit = st.checkbox("Include Fertikit?")
         ec_ph = st.checkbox("Include EC/PH sensor?")
         weather_station = st.checkbox("Include Weather Station?")
+        gs_one = st.checkbox("Include GS-ONE units?")
+        if gs_one:
+            gs_one_units = st.number_input("How many GS-ONE units?", min_value=1, max_value=20)
+            netacap_sensors_one = st.number_input("Netacap sensors (GS-ONE unit can take 1 Netacap)", max_value=20, min_value=0,value=0)
 
     if system_type == "Multicable":
         controller = True
@@ -87,7 +98,11 @@ elif page == "🛠 System Designer":
             "fertikit": fertikit,
             "ec_ph": ec_ph,
             "weather_station": weather_station,
-            "controller": controller
+            "controller": controller,
+            "gs_one":gs_one,
+            "netacap_sensors":netacap_sensors,
+            "netacap_sensors_one":netacap_sensors_one,
+            "gs_one_units":gs_one_units
         }
         response = requests.post(API_DESIGN_URL, data=payload)
 
@@ -112,3 +127,6 @@ elif page == "🛠 System Designer":
 #git add -A
 #git commit -m 'commit name'
 #git push origin main
+
+#### local run #############
+# streamlit run app.py 

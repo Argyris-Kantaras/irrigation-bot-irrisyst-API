@@ -68,11 +68,13 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
     if system_name == "singlenet":  
         rtu2_plsm = 0  
         rtu4_plsm = 0  
+        ground_kit = 1
         for v in total_valves:  
           for p in parts:
               if v <= 2 and rtu2_plsm == 0 and p.get("part")=="RTU 2x2+PLSM":
                 rtu2_plsm = rtu2_plsm + 1
                 rtu2x2 = rtu2x2-1
+                ground_kit = ground_kit + 1
                 p["Qty"] = rtu2_plsm
               if v <= 2 and p.get("part")=="RTU 2x2":
                 rtu2x2 = rtu2x2+1
@@ -80,6 +82,7 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
               if v > 2 and v <= 4 and rtu4_plsm == 0 and p.get("part")=="RTU 4x4+PLSM":
                 rtu4_plsm = rtu4_plsm+1
                 rtu4x4 = rtu4x4-1
+                ground_kit = ground_kit + 1
                 p["Qty"] = rtu4_plsm
               if v > 2 and v <= 4 and p.get("part")=="RTU 4x4":
                 rtu4x4 = rtu4x4+1
@@ -93,6 +96,8 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
               if v > 6 and p.get("part")=="RTU 4x4":
                 rtu4x4 = rtu4x4+2
                 p["Qty"] = rtu4x4
+              if p.get("part")== "Ground Kit":
+                    p["Qty"] = ground_kit
 
 
         
@@ -257,6 +262,7 @@ SYSTEM_PARTS = {
         {"part": "SLSM", "SN": "00035-008300","name": "SINGLENET SLSM LINE SUPPRESSION MODULE","Qty": qty },
         {"part": "RTU 4x4+PLSM", "SN": "74340-015500","name": "SINGLENET RTU 4 LATCH OUT &4 D.IN+PLSM","Qty": qty - 1},
         {"part": "RTU 2x2+PLSM", "SN": "74340-015400","name": "SINGLENET RTU 2 LATCH OUT&2 D.IN+PLSM","Qty": qty - 1},
+        {"part": "Ground Kit", "SN": "77100-005880","name": "Ground Kit","Qty": qty},
     ],
     "radionet": [
         {"part": "Host and Base", "SN": "74360-007600","name": "RadioNet HOST + BASE","Qty": qty},

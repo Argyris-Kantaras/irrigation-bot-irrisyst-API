@@ -106,3 +106,9 @@ elif page == "🛠 System Designer":
                 st.write(response.json())
             except:
                 st.write("Unknown error")
+
+
+#upload ---------------
+#git add -A
+#git commit -m 'commit name'
+#git push origin main

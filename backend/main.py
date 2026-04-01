@@ -117,14 +117,9 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
             
         for v in total_valves:  
           for p in parts:
-              if v <= 2 and netacap_sensors == 0 and p.get("part")=="RTU 2x2":
+              if v <= 2 and p.get("part")=="RTU 2x2":
                 rtu2x2_radio = rtu2x2_radio+1
                 p["Qty"] = rtu2x2_radio
-
-              if v <= 2 and netacap_sensors > 0 and p.get("part")=="RTU Expandable":
-                rtu_expandable = rtu_expandable+1
-                expansion_board = expansion_board+1
-                p["Qty"] = rtu_expandable
 
               if v > 2 and v <= 3 and p.get("part")=="RTU Expandable":
                 rtu_expandable = rtu_expandable+1
@@ -152,6 +147,12 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                     p["Qty"] = solar_panel_qty
               if p.get("part")== "Rnet battery":
                     p["Qty"] = solar_panel_qty
+
+              if v <= 2 and netacap_sensors > 0 and p.get("part")=="RTU Expandable":
+                if rtu2x2_radio > netacap_sensors:
+                   rtu_expandable = rtu_expandable+1
+                   rtu2x2_radio = rtu2x2_radio - 1
+                p["Qty"] = rtu_expandable
 
     # Optional add-ons
     if controller:

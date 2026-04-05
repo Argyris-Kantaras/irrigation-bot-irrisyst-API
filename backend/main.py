@@ -77,7 +77,6 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
           for p in parts:
               if v <= 2 and rtu2_plsm == 0 and p.get("part")=="RTU 2x2+PLSM":
                 rtu2_plsm = rtu2_plsm + 1
-                rtu2x2 = rtu2x2-1
                 ground_kit = ground_kit + 1
                 p["Qty"] = rtu2_plsm
               if v <= 2 and p.get("part")=="RTU 2x2":
@@ -85,7 +84,6 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
                 p["Qty"] = rtu2x2
               if v > 2 and v <= 4 and rtu4_plsm == 0 and p.get("part")=="RTU 4x4+PLSM":
                 rtu4_plsm = rtu4_plsm+1
-                rtu4x4 = rtu4x4-1
                 ground_kit = ground_kit + 1
                 p["Qty"] = rtu4_plsm
               if v > 2 and v <= 4 and p.get("part")=="RTU 4x4":
@@ -106,17 +104,14 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
 
         
     if system_name == "radionet":
-        if netacap_sensors > 0:
-                   parts.append({"part": "Serial Expansion card", "SN": "00035-013150","name": "Serial Expansion card, RS232/485/SDI12 ","Qty": netacap_sensors})
-                   parts.append({"part": "NETACAP 3.5V REGULATOR CARD", "SN": "74330-000006","name": "NETACAP 3.5V REGULATOR CARD #297 FOR DFM  ","Qty": netacap_sensors})            ,
-                   parts.append({"part": "R-NET DCP CAPACITOR CARD", "SN": "74330-012240","name": "R-NET DCP CAPACITOR CARD","Qty": netacap_sensors})
-                   parts.append({"part": "NETACAP 6/60CM", "SN": "74730-000009","name": "SOIL MOISTURE NETACAP WP 6/60CM","Qty": netacap_sensors})
         
         for r in range(len(total_valves)):
           solar_panel_qty = solar_panel_qty+1
             
         for v in total_valves:  
+          
           for p in parts:
+              
               if v <= 2 and p.get("part")=="RTU 2x2":
                 rtu2x2_radio = rtu2x2_radio+1
                 p["Qty"] = rtu2x2_radio
@@ -148,11 +143,11 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
               if p.get("part")== "Rnet battery":
                     p["Qty"] = solar_panel_qty
 
-              if v <= 2 and netacap_sensors > 0 and p.get("part")=="RTU Expandable":
-                if rtu2x2_radio > netacap_sensors:
-                   rtu_expandable = rtu_expandable+1
-                   rtu2x2_radio = rtu2x2_radio - 1
-                p["Qty"] = rtu_expandable
+            #   if v > 2 and netacap_sensors > rtu_expandable and p.get("part")=="RTU Expandable":
+            #     rtu_expandable = rtu_expandable + 1
+            #     p["Qty"] = rtu_expandable
+
+              
 
     # Optional add-ons
     if controller:
@@ -168,7 +163,26 @@ def generate_parts(system_name: str, total_valves: str, fertikit: bool, ec_ph: b
 
     if gs_one:
         gs_one_devices_generator()
-        
+    
+    if netacap_sensors > 0:
+        parts.append({"part": "Serial Expansion card", "SN": "00035-013150","name": "Serial Expansion card, RS232/485/SDI12 ","Qty": netacap_sensors})
+        parts.append({"part": "NETACAP 3.5V REGULATOR CARD", "SN": "74330-000006","name": "NETACAP 3.5V REGULATOR CARD #297 FOR DFM  ","Qty": netacap_sensors})            ,
+        parts.append({"part": "R-NET DCP CAPACITOR CARD", "SN": "74330-012240","name": "R-NET DCP CAPACITOR CARD","Qty": netacap_sensors})
+        parts.append({"part": "NETACAP 6/60CM", "SN": "74730-000009","name": "SOIL MOISTURE NETACAP WP 6/60CM","Qty": netacap_sensors})
+        if netacap_sensors > rtu_expandable:
+            for p in parts:
+              remaining_sensors = netacap_sensors - rtu_expandable
+              rtu_expandable = remaining_sensors + rtu_expandable
+              
+              if rtu2x2_radio > 0 and rtu2x2_radio >= remaining_sensors:
+                    rtu2x2_radio = rtu2x2_radio - remaining_sensors
+
+              else:
+                    rtu2x2_radio = 0
+              p.get("part") =="RTU 2x2" and p.update({"Qty": rtu2x2_radio})
+              p.get("part") == "RTU Expandable" and p.update({"Qty": rtu_expandable})
+
+
     return parts
 # ------------------ EXCEL EXPORT ------------------
 
